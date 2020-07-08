@@ -13,15 +13,15 @@
 function getMinuteQuarter(int $minute): string
 {
     if ($minute < 0 || $minute > 60) {
-
         throw new InvalidArgumentException();
-    } else if ($minute > 0 && $minute <= 15) {
+    }
+    if ($minute > 0 && $minute <= 15) {
 
         return 'first';
-    } else if ($minute > 15 && $minute <= 30) {
+    } elseif ($minute > 15 && $minute <= 30) {
 
         return 'second';
-    } else if ($minute > 30 && $minute <= 45) {
+    } elseif ($minute > 30 && $minute <= 45) {
 
         return 'third';
     }
@@ -43,14 +43,10 @@ function getMinuteQuarter(int $minute): string
 function isLeapYear(int $year): bool
 {
     if ($year < 1900) {
-
         throw new InvalidArgumentException();
-    } else if ($year % 4 == 0) {
-
-        return true;
     }
 
-    return false;
+    return date('L', strtotime("$year-01-01"));
 }
 
 /**
@@ -67,16 +63,14 @@ function isLeapYear(int $year): bool
 function isSumEqual(string $input): bool
 {
     if (strlen($input) !== 6) {
-
         throw new InvalidArgumentException();
-    } else {
-        $firstThreeSum = intval($input[0]) + intval($input[1]) + intval($input[2]);
-        $lastThreeSum = intval($input[3]) + intval($input[4]) + intval($input[5]);
+    }
+    $firstThreeSum = intval($input[0]) + intval($input[1]) + intval($input[2]);
+    $lastThreeSum = intval($input[3]) + intval($input[4]) + intval($input[5]);
 
-        if ($firstThreeSum === $lastThreeSum) {
+    if ($firstThreeSum === $lastThreeSum) {
 
-            return true;
-        }
+        return true;
     }
 
     return false;
