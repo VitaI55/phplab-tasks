@@ -6,6 +6,8 @@ class IsLeapYearTest extends TestCase
 {
     /**
      * @dataProvider positiveDataProvider
+     * @param $year
+     * @param $expected
      */
     public function testPositive($year, $expected)
     {

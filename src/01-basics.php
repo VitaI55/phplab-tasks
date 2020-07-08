@@ -6,12 +6,27 @@
  * Throw InvalidArgumentException if $minute is negative of greater then 60.
  * @see https://www.php.net/manual/en/class.invalidargumentexception.php
  *
- * @param  int  $minute
+ * @param int $minute
  * @return string
  * @throws InvalidArgumentException
  */
-function getMinuteQuarter(int $minute)
+function getMinuteQuarter(int $minute): string
 {
+    if ($minute < 0 || $minute > 60) {
+
+        throw new InvalidArgumentException();
+    } else if ($minute > 0 && $minute <= 15) {
+
+        return 'first';
+    } else if ($minute > 15 && $minute <= 30) {
+
+        return 'second';
+    } else if ($minute > 30 && $minute <= 45) {
+
+        return 'third';
+    }
+
+    return 'fourth';
 }
 
 /**
@@ -21,12 +36,21 @@ function getMinuteQuarter(int $minute)
  * @see https://en.wikipedia.org/wiki/Leap_year
  * @see https://www.php.net/manual/en/class.invalidargumentexception.php
  *
- * @param  int  $year
+ * @param int $year
  * @return boolean
  * @throws InvalidArgumentException
  */
-function isLeapYear(int $year)
+function isLeapYear(int $year): bool
 {
+    if ($year < 1900) {
+
+        throw new InvalidArgumentException();
+    } else if ($year % 4 == 0) {
+
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -36,10 +60,24 @@ function isLeapYear(int $year)
  * Throw InvalidArgumentException if $input contains more then 6 digits.
  * @see https://www.php.net/manual/en/class.invalidargumentexception.php
  *
- * @param  string  $input
  * @return boolean
  * @throws InvalidArgumentException
+ * @param string $input
  */
-function isSumEqual(string $input)
+function isSumEqual(string $input): bool
 {
+    if (strlen($input) !== 6) {
+
+        throw new InvalidArgumentException();
+    } else {
+        $firstThreeSum = intval($input[0]) + intval($input[1]) + intval($input[2]);
+        $lastThreeSum = intval($input[3]) + intval($input[4]) + intval($input[5]);
+
+        if ($firstThreeSum === $lastThreeSum) {
+
+            return true;
+        }
+    }
+
+    return false;
 }

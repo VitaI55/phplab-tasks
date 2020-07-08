@@ -6,6 +6,8 @@ class GetMinuteQuarterTest extends TestCase
 {
     /**
      * @dataProvider positiveDataProvider
+     * @param $minute
+     * @param $expected
      */
     public function testPositive($minute, $expected)
     {
@@ -16,7 +18,7 @@ class GetMinuteQuarterTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        getMinuteQuarter(75);
+       getMinuteQuarter(75);
     }
 
     public function positiveDataProvider()
