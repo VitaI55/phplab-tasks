@@ -16,13 +16,10 @@ function getMinuteQuarter(int $minute): string
         throw new InvalidArgumentException();
     }
     if ($minute > 0 && $minute <= 15) {
-
         return 'first';
     } elseif ($minute > 15 && $minute <= 30) {
-
         return 'second';
     } elseif ($minute > 30 && $minute <= 45) {
-
         return 'third';
     }
 
@@ -46,7 +43,7 @@ function isLeapYear(int $year): bool
         throw new InvalidArgumentException();
     }
 
-    return date('L', strtotime("$year-01-01"));
+    return !($year % 4) && ($year % 100 || !($year % 400));
 }
 
 /**
@@ -69,7 +66,6 @@ function isSumEqual(string $input): bool
     $lastThreeSum = intval($input[3]) + intval($input[4]) + intval($input[5]);
 
     if ($firstThreeSum === $lastThreeSum) {
-
         return true;
     }
 

@@ -7,8 +7,12 @@
  * @param  string  $input
  * @return string
  */
-function snakeCaseToCamelCase(string $input)
+function snakeCaseToCamelCase(string $input):string
 {
+    $str = str_replace(' ', '',
+        ucwords(str_replace('_', ' ', $input)));
+
+    return lcfirst($str);
 }
 
 /**
