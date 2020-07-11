@@ -1,16 +1,20 @@
 <?php
+
 /**
  * The $input variable contains text in snake case (i.e. hello_world or this_is_home_task)
  * Transform it into camel cased string and return (i.e. helloWorld or thisIsHomeTask)
  * @see http://xahlee.info/comp/camelCase_vs_snake_case.html
  *
- * @param  string  $input
+ * @param string $input
  * @return string
  */
-function snakeCaseToCamelCase(string $input):string
+function snakeCaseToCamelCase(string $input): string
 {
-    $str = str_replace(' ', '',
-        ucwords(str_replace('_', ' ', $input)));
+    $str = str_replace(
+        ' ',
+        '',
+        ucwords(str_replace('_', ' ', $input))
+    );
 
     return lcfirst($str);
 }
@@ -20,11 +24,23 @@ function snakeCaseToCamelCase(string $input):string
  * Mirror each word individually and return transformed text (i.e. 'АВЫФ ждло')
  * !!! do not change words order
  *
- * @param  string  $input
+ * @param string $input
  * @return string
  */
-function mirrorMultibyteString(string $input)
+function mirrorMultibyteString(string $input): string
 {
+    $encoding = mb_detect_encoding($input);
+    $strArr = explode(' ', $input);
+    $reversed = '';
+    foreach ($strArr as $str) {
+        $length = mb_strlen($str, $encoding);
+        while ($length-- > 0) {
+            $reversed .= mb_substr($str, $length, 1, $encoding);
+        }
+        $reversed .= ' ';
+    }
+
+    return rtrim($reversed);
 }
 
 /**
@@ -38,9 +54,15 @@ function mirrorMultibyteString(string $input)
  * europe -> Europeurope
  * Implement this logic.
  *
- * @param  string  $noun
+ * @param string $noun
  * @return string
  */
-function getBrandName(string $noun)
+function getBrandName(string $noun): string
 {
+    if ($noun[0] === $noun[strlen($noun) - 1]) {
+        $real = ucfirst($noun);
+        $secondPart = substr($noun, 1);
+        return $real . $secondPart;
+    }
+    return 'The ' . ucfirst($noun);
 }

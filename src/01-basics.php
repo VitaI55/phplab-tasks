@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The $minute variable contains a number from 0 to 59 (i.e. 10 or 25 or 60 etc).
  * Determine in which quarter of an hour the number falls.
@@ -34,7 +35,7 @@ function getMinuteQuarter(int $minute): string
  * @see https://www.php.net/manual/en/class.invalidargumentexception.php
  *
  * @param int $year
- * @return boolean
+ * @return bool
  * @throws InvalidArgumentException
  */
 function isLeapYear(int $year): bool
