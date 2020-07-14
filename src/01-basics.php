@@ -66,9 +66,5 @@ function isSumEqual(string $input): bool
     $firstThreeSum = intval($input[0]) + intval($input[1]) + intval($input[2]);
     $lastThreeSum = intval($input[3]) + intval($input[4]) + intval($input[5]);
 
-    if ($firstThreeSum === $lastThreeSum) {
-        return true;
-    }
-
-    return false;
+    return $firstThreeSum === $lastThreeSum;
 }

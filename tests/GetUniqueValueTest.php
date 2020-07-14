@@ -6,6 +6,8 @@ class GetUniqueValueTest extends TestCase
 {
     /**
      * @dataProvider positiveDataProvider
+     * @param $input
+     * @param $expected
      */
     public function testPositive($input, $expected)
     {
@@ -17,7 +19,7 @@ class GetUniqueValueTest extends TestCase
         return [
             [[], 0],
             [[1, 2, 3, 2, 1, 5, 6], 3],
-            [[1, 1, 2, 3, 3], 1],
+            [[1, 1, 2, 3, 3], 2],
             [[1, 1, 2, 2, 3, 3], 0],
         ];
     }
