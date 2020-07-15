@@ -68,4 +68,14 @@ function getUniqueValue(array $input): int
  */
 function groupByTag(array $input): array
 {
+    $result = [];
+    array_multisort($input);
+
+    foreach ($input as $arr) {
+        foreach ($arr['tags'] as $tag) {
+            $result[$tag][] = $arr['name'];
+        }
+    }
+    ksort($result);
+    return $result;
 }
