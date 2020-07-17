@@ -29,16 +29,15 @@ function snakeCaseToCamelCase(string $input): string
  */
 function mirrorMultibyteString(string $input): string
 {
-    $encoding = mb_detect_encoding($input);
-    $strArr = explode(' ', $input);
+    $strAr = explode(' ', $input);
     $reversed = '';
-    foreach ($strArr as $str) {
-        $length = mb_strlen($str, $encoding);
-        while ($length-- > 0) {
-            $reversed .= mb_substr($str, $length, 1, $encoding);
-        }
-        $reversed .= ' ';
-    }
+    $i = 0;
+    do {
+        preg_match_all('/./us', $strAr[$i], $convertedInArray);
+        $convertedInString = join('', array_reverse($convertedInArray[0]));
+        $reversed .= $convertedInString . ' ';
+        $i++;
+    } while ($i < count($strAr));
 
     return rtrim($reversed);
 }
