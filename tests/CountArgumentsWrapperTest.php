@@ -17,6 +17,10 @@ class CountArgumentsWrapperTest extends TestCase
 
     public function positiveDataProvider()
     {
-        return [[25, 'mo', 74], [[0, 1, 2, 3], ['por', 'lion']], [true, 'false', false]];
+        return [
+            [25, 'mo', 74],
+            [[0, 1, 2, 3], ['por', 'lion']],
+            [true, 'false', false]
+        ];
     }
 }

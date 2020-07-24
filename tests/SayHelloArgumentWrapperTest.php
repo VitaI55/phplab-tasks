@@ -18,7 +18,7 @@ class SayHelloArgumentWrapperTest extends TestCase
     public function positiveDataProvider()
     {
         return [
-            [[1,2,3,4,5]],
+            [[1, 2, 3, 4, 5]],
             [null],
             [78.457]
         ];

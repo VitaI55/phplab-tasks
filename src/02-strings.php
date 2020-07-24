@@ -58,9 +58,10 @@ function mirrorMultibyteString(string $input): string
  */
 function getBrandName(string $noun): string
 {
+    $lowerCaseNoun = strtolower($noun);
     if (strcasecmp($noun[0], $noun[strlen($noun) - 1]) === 0) {
-        $firstPart = ucfirst($noun);
-        $secondPart = substr($noun, 1);
+        $firstPart = ucfirst($lowerCaseNoun);
+        $secondPart = substr($lowerCaseNoun, 1);
         return $firstPart . $secondPart;
     }
     return 'The ' . ucfirst($noun);
