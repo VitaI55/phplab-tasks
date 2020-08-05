@@ -21,38 +21,20 @@ function getUniqueFirstLetters(array $airports)
     return array_values(array_unique($alphabet));
 }
 
-//function for sorting by a specific key
-function array_sort($array, $on, $order = SORT_ASC): array
-{
-    $new_array = array();
-    $sortable_array = array();
+function filterByFirstLetter(array $airports, $letter):array{
+   return array_values(array_filter($airports, function ($airports) use($letter) {
+        return strtolower($airports['name'][0]) == strtolower($letter);
+    }));
+}
 
-    if (count($array) > 0) {
-        foreach ($array as $k => $v) {
-            if (is_array($v)) {
-                foreach ($v as $k2 => $v2) {
-                    if ($k2 == $on) {
-                        $sortable_array[$k] = $v2;
-                    }
-                }
-            } else {
-                $sortable_array[$k] = $v;
-            }
-        }
+function filterByState(array $airports, $state){
+    return array_values(array_filter($airports, function ($airports) use($state) {
+        return strtolower($airports['state']) == strtolower($state);
+    }));
+}
 
-        switch ($order) {
-            case SORT_ASC:
-                asort($sortable_array);
-                break;
-            case SORT_DESC:
-                arsort($sortable_array);
-                break;
-        }
-
-        foreach ($sortable_array as $k => $v) {
-            $new_array[$k] = $array[$k];
-        }
-    }
-
-    return $new_array;
+function sortByKey($key) {
+    return function ($a, $b) use ($key) {
+        return strnatcmp($a[$key], $b[$key]);
+    };
 }

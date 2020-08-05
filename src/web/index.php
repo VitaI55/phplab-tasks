@@ -4,8 +4,6 @@ require_once './functions.php';
 
 $airports = require './airports.php';
 
-$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-
 // Filtering
 /**
  * Here you need to check $_GET request if it has any filtering
@@ -13,25 +11,12 @@ $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
  * (see Filtering tasks 1 and 2 below)
  */
 
-// filter by first letter(and if exists - state)
 if (isset($_GET['filter_by_first_letter'])) {
-    sort($airports);
-
-    foreach ($airports as $index => $airport) {
-        if ($airport['name'][0] !== $_GET['filter_by_first_letter']) {
-            unset($airports[$index]);
-        }
-    }
+    $airports = filterByFirstLetter($airports, $_GET['filter_by_first_letter']);
 }
 
 if (isset($_GET['filter_by_state'])) {
-    sort($airports);
-
-    foreach ($airports as $index => $airport) {
-        if ($airport['state'][0] !== $_GET['filter_by_state']) {
-            unset($airports[$index]);
-        }
-    }
+    $airports = filterByState($airports, $_GET['filter_by_state']);
 }
 
 // Sorting
@@ -42,8 +27,7 @@ if (isset($_GET['filter_by_state'])) {
  */
 
 if (isset($_GET['sort'])) {
-    //Used custom array_sort for sorting by a specific key
-    $airports = array_sort($airports, $_GET['sort'], SORT_ASC);
+    usort($airports, sortByKey($_GET['sort']));
 }
 
 // Pagination
@@ -52,15 +36,11 @@ if (isset($_GET['sort'])) {
  * and apply pagination logic
  * (see Pagination task below)
  */
-$pageCount = 0;
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if (isset($_GET['page'])) {
-    $airportCount = count($airports);
-    $pageCount = $airportCount / 5;
-    if ($airportCount % 5 !== 0) {
-        $pageCount++;
-    }
-    $start = ($currentPage > 1) ? ($currentPage * 5) - 5 : 0;
-    $airports = array_slice($airports, $start, 5);
+    $perPage = 5;
+    $pageCount = ceil(count($airports) / $perPage);
+    $airports = array_slice($airports, $currentPage - 1, 5);
 }
 ?>
 <!doctype html>
@@ -94,18 +74,9 @@ if (isset($_GET['page'])) {
 
         <?php
         foreach (getUniqueFirstLetters(require './airports.php') as $letter): ?>
-            <?php
-            if (isset($_GET['filter_by_state'])): ?>
-                <a href="?page=1&filter_by_state=<?= $_GET['filter_by_state'] ?>&filter_by_first_letter=<?= $letter ?>">
-                    <?= $letter ?>
-                </a>
-            <?php
-            else : ?>
-                <a href="?page=1&filter_by_first_letter=<?= $letter ?>">
-                    <?= $letter ?>
-                </a>
-            <?php
-            endif; ?>
+            <a href="?<?= http_build_query(array_merge($_GET, ['page' => 1, 'filter_by_first_letter' => $letter])) ?>">
+                <?= $letter ?>
+            </a>
         <?php
         endforeach; ?>
 
@@ -125,61 +96,10 @@ if (isset($_GET['page'])) {
     <table class="table">
         <thead>
         <tr>
-            <?php
-            if (isset($_GET['filter_by_first_letter']) &&
-                isset($_GET['filter_by_state'])): ?>
-                <th scope="col"><a
-                            href="?page=<?= $currentPage ?>&filter_by_state=<?= $_GET['filter_by_state'] ?>&filter_by_first_letter=<?= $_GET['filter_by_first_letter'] ?>&sort=name">
-                        Name</a>
-                </th>
-                <th scope="col"><a
-                            href="?page=<?= $currentPage ?>&filter_by_state=<?= $_GET['filter_by_state'] ?>&filter_by_first_letter=<?= $_GET['filter_by_first_letter'] ?>&sort=code">
-                        Code</a>
-                </th>
-                <th scope="col"><a
-                            href="?page=<?= $currentPage ?>&filter_by_state=<?= $_GET['filter_by_state'] ?>&filter_by_first_letter=<?= $_GET['filter_by_first_letter'] ?>&sort=state">
-                        State</a>
-                </th>
-                <th scope="col"><a
-                            href="?page=<?= $currentPage ?>&filter_by_state=<?= $_GET['filter_by_state'] ?>&filter_by_first_letter=<?= $_GET['filter_by_first_letter'] ?>&sort=city">
-                        City</a>
-                </th>
-            <?php
-            elseif (isset($_GET['filter_by_first_letter'])) : ?>
-                <th scope="col"><a
-                            href="?page=<?= $currentPage ?>&filter_by_first_letter=<?= $_GET['filter_by_first_letter'] ?>&sort=name">Name</a>
-                </th>
-                <th scope="col"><a
-                            href="?page=<?= $currentPage ?>&filter_by_first_letter=<?= $_GET['filter_by_first_letter'] ?>&sort=code">Code</a>
-                </th>
-                <th scope="col"><a
-                            href="?page=<?= $currentPage ?>&filter_by_first_letter=<?= $_GET['filter_by_first_letter'] ?>&sort=state">State</a>
-                </th>
-                <th scope="col"><a
-                            href="?page=<?= $currentPage ?>&filter_by_first_letter=<?= $_GET['filter_by_first_letter'] ?>&sort=city">City</a>
-                </th>
-            <?php
-            elseif (isset($_GET['filter_by_state'])) : ?>
-                <th scope="col"><a
-                            href="?page=<?= $currentPage ?>&filter_by_state=<?= $_GET['filter_by_state'] ?>&sort=name">Name</a>
-                </th>
-                <th scope="col"><a
-                            href="?page=<?= $currentPage ?>&filter_by_state=<?= $_GET['filter_by_state'] ?>&sort=code">Code</a>
-                </th>
-                <th scope="col"><a
-                            href="?page=<?= $currentPage ?>&filter_by_state=<?= $_GET['filter_by_state'] ?>&sort=state">State</a>
-                </th>
-                <th scope="col"><a
-                            href="?page=<?= $currentPage ?>&filter_by_state=<?= $_GET['filter_by_state'] ?>&sort=city">City</a>
-                </th>
-            <?php
-            else : ?>
-                <th scope="col"><a href="?sort=name">Name</a></th>
-                <th scope="col"><a href="?sort=code">Code</a></th>
-                <th scope="col"><a href="?sort=state">State</a></th>
-                <th scope="col"><a href="?sort=city">City</a></th>
-            <?php
-            endif; ?>
+            <th scope="col"><a href="?<?= http_build_query(array_merge($_GET, ['sort' => 'name'])) ?>">Name</a></th>
+            <th scope="col"><a href="?<?= http_build_query(array_merge($_GET, ['sort' => 'code'])) ?>">Code</a></th>
+            <th scope="col"><a href="?<?= http_build_query(array_merge($_GET, ['sort' => 'state'])) ?>">State</a></th>
+            <th scope="col"><a href="?<?= http_build_query(array_merge($_GET, ['sort' => 'city'])) ?>">City</a></th>
             <th scope="col">Address</th>
             <th scope="col">Timezone</th>
         </tr>
@@ -201,18 +121,9 @@ if (isset($_GET['page'])) {
                 <td><?= $airport['name'] ?></td>
                 <td><?= $airport['code'] ?></td>
                 <td>
-                    <?php
-                    if (isset($_GET['filter_by_first_letter'])): ?>
-                        <a href="?page=1&filter_by_first_letter=<?= $_GET['filter_by_first_letter'] ?>&filter_by_state=<?= $airport['state'][0] ?>">
-                            <?= $airport['state'] ?>
-                        </a>
-                    <?php
-                    else: ?>
-                        <a href="?page=1&filter_by_state=<?= $airport['state'][0] ?>">
-                            <?= $airport['state'] ?>
-                        </a>
-                    <?php
-                    endif; ?>
+                    <a href="?<?= http_build_query(array_merge($_GET, ['page' => 1, 'filter_by_state' => $airport['state']])) ?>">
+                        <?= $airport['state'] ?>
+                    </a>
                 </td>
                 <td><?= $airport['city'] ?></td>
                 <td><?= $airport['address'] ?></td>
@@ -235,33 +146,14 @@ if (isset($_GET['page'])) {
     <nav aria-label="Navigation">
         <ul class="pagination">
             <?php
-            if (isset($_GET['filter_by_first_letter']) &&
-                isset($_GET['filter_by_state']) && isset($_GET['sort'])): ?>
-
-                <?php
-                include('templates/filter_by_first_letter_and_state_with_sort.php') ?>
-
+            for ($i = 1; $i < $pageCount; $i++): ?>
+                <li class="page-item <?= $currentPage == $i ? 'active' : '' ?>">
+                    <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>">
+                        <?= $i ?>
+                    </a>
+                </li>
             <?php
-            elseif (isset($_GET['filter_by_first_letter']) &&
-                isset($_GET['filter_by_state'])): ?>
-
-                <?php
-                include('templates/filter_by_first_letter_and_state.php') ?>
-
-            <?php
-            elseif (isset($_GET['filter_by_first_letter'])) : ?>
-
-                <?php
-                include('templates/filter_by_first_letter.php') ?>
-
-            <?php
-            elseif (isset($_GET['filter_by_state'])): ?>
-
-                <?php
-                include('templates/filter_by_state.php') ?>
-
-            <?php
-            endif; ?>
+            endfor; ?>
         </ul>
     </nav>
 
